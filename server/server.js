@@ -11,7 +11,7 @@ app.use(bodyParser.json());
 
 // Postman route
 // For the url, for resources you can do /name
-// Posts a todo
+// Posts a todo from POSTMAN
 app.post('/todos', (req, res) => {
     var todo = new Todo({
         text: req.body.text
@@ -24,13 +24,13 @@ app.post('/todos', (req, res) => {
     });
 });
 
-// Gets all todos
+// Gets all todos when requesting from POSTMAN
 app.get('/todos', (req, res) => {
     Todo.find().then((todos) => {
         res.send({todos});
     }, (e) => {
         res.status(400).send(e);
-    })
+    });
 });
 
 app.listen(3000, () => {
