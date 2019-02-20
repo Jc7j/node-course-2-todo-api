@@ -1,16 +1,34 @@
 const {SHA256} = require('crypto-js');
 const jwt = require('jsonwebtoken');
+const bcrypt = require('bcryptjs')
 
-var data = {
-    id: 10
-};
-// It creates the hash & then returns the token value
-var token = jwt.sign(data, '123abc');
-console.log(token);
+var password = '123abc!';
 
-//It takes that token & secret and makes sure that data wasnt manipulated
-var decoded = jwt.verify(token, '123abc');
-console.log(decoded);
+// The longer the better for a password. 120 max maybe?
+bcrypt.genSalt(10, (err, salt) => {
+    bcrypt.hash(password, salt, (err, hash) => {
+        console.log(hash);
+    });
+});
+
+// Comparing values
+var hashedPassword = '$2a$10$zXpwOg1YGWhVSWmNrtVXTut9LbiRtJ9zLj0jrHc.jGR22RNxVklBK';
+
+bcrypt.compare(password, hashedPassword, (err, res) => {
+    console.log(res);
+});
+
+// // Hashing auth
+// var data = {
+//     id: 10
+// };
+// // It creates the hash & then returns the token value
+// var token = jwt.sign(data, '123abc');
+// console.log(token);
+
+// //It takes that token & secret and makes sure that data wasnt manipulated
+// var decoded = jwt.verify(token, '123abc');
+// console.log(decoded);
 
 
 // // PLAYGROUND STUFF 
