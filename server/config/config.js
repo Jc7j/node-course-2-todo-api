@@ -1,4 +1,6 @@
-// IF 'Error: listen EADDRINUSE: address already in use :::3000' use killall -9 node to kill all other terminals running it
+// IF 'Error: listen EADDRINUSE: address already in use :::3000' use lsof -i tcp:3000 to find PID number that the thing is running and 
+// use kill -15 (PID number) to kill the specific thing thats running
+
 var env = process.env.NODE_ENV || 'development';
 
 if (env === 'development') {

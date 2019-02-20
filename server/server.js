@@ -1,4 +1,4 @@
-require('./config/config');
+require('./config/config'); 
 
 const _ = require('lodash');
 const express = require('express');
@@ -8,6 +8,8 @@ const {ObjectID} = require('mongodb');
 const {mongoose} = require('./db/mongoose');// Grabbing the mongoose from mongoose.js file
 const {Todo} = require('./models/todo');
 const {User} = require('./models/user');
+
+mongoose.set('useCreateIndex', true); // Stops 'deprecationwarnings: collection.ensureIndex is deprecated. Use createIndexes instead'
 
 const app = express();
 const port = process.env.PORT;
@@ -93,6 +95,7 @@ app.delete('/todos/:id', (req, res) => {
 
 });
 
+// UPDATING
 app.patch('/todos/:id', (req, res) => {
     var id = req.params.id;
     var body = _.pick(req.body, ['text', 'completed']);
@@ -118,6 +121,22 @@ app.patch('/todos/:id', (req, res) => {
         res.status(400).send();
     });
 });
+
+// POST /users
+app.post('/users', (req, res) => {
+   var body = _.pick(req.body, ['email', 'password']); // pick method from lodash 
+   var user = new User(body);
+
+   user.save().then((user) => {
+    return user.generateAuthToken();
+    // res.send(user);
+   }).then((token) => {
+       res.header('x-auth', token).send(user); // Custom header to store token value
+   }).catch((e) => {
+       res.status(400).send(e);
+   });
+});
+
 if (!module.parent) { // This fixes 'Uncaught Error: listen EADDRINUSE :::3000' problem
     app.listen(port, () => {
         console.log(`Started on port ${port}`);
