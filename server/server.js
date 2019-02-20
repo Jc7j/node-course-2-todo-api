@@ -8,6 +8,7 @@ const {ObjectID} = require('mongodb');
 const {mongoose} = require('./db/mongoose');// Grabbing the mongoose from mongoose.js file
 const {Todo} = require('./models/todo');
 const {User} = require('./models/user');
+var {authenticate} = require('./middleware/authenticate');
 
 mongoose.set('useCreateIndex', true); // Stops 'deprecationwarnings: collection.ensureIndex is deprecated. Use createIndexes instead'
 
@@ -135,6 +136,11 @@ app.post('/users', (req, res) => {
    }).catch((e) => {
        res.status(400).send(e);
    });
+});
+
+// Private Route for keeping users info private
+app.get('/users/me', authenticate, (req, res) => {
+    res.send(req.user);
 });
 
 if (!module.parent) { // This fixes 'Uncaught Error: listen EADDRINUSE :::3000' problem
